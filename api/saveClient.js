@@ -1,4 +1,3 @@
-JavaScript
 const { createClient } = require('@supabase/supabase-js');
 
 export default async function handler(req, res) {
