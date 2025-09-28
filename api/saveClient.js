@@ -10,21 +10,22 @@ export default async function handler(req, res) {
       process.env.SUPABASE_ANON_KEY
     );
 
+    // Recebe todos os dados do cliente, incluindo os novos campos
     const clientData = req.body;
 
     // Procura por um cliente existente com o mesmo email ou telemóvel
     let query = supabase.from('clients');
     if (clientData.email) {
-        query = query.select('id').eq('email', clientData.email);
+        query = query.select('id, firstName, lastName, email, phone, dob, gender').eq('email', clientData.email);
     } else if (clientData.phone) {
-        query = query.select('id').eq('phone', clientData.phone);
+        query = query.select('id, firstName, lastName, email, phone, dob, gender').eq('phone', clientData.phone);
     }
 
     const { data: existing, error: findError } = await query;
     if (findError) throw findError;
 
     if (existing && existing.length > 0) {
-        // Se o cliente já existe, retorna os dados dele em vez de criar um novo.
+        // Se o cliente já existe, retorna os dados dele.
         return res.status(200).json({ success: true, data: existing, message: 'Client already exists.' });
     }
 
